@@ -1,0 +1,33 @@
+{% extends 'main/base.html' %}
+{% load my_tags %}
+{% block content %}
+
+<div class="col-sm-6 mb-3 mb-sm-0">
+    <div class="card">
+        <div class="card-header">
+
+            <h4 class="card-title">
+                Введите Email и мы вышлем вам новый пароль
+            </h4>
+        </div>
+        <div class="card-body">
+
+            <form method="post" enctype="multipart/form-data">
+
+                {% csrf_token %}
+
+                <div class="text-left">
+                    <input type="email" name="email" class="form-control mb-3" placeholder="Email">
+                    <button type="submit" class="btn btn-outline-success">
+                        Восстановить
+                    </button>
+                </div>
+            </form>
+
+        </div>
+        <div class="card-footer">
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,31 @@
+[tool.poetry]
+name = "habbits"
+version = "0.1.0"
+description = ""
+authors = ["Glushkov Alex <avgl@mail.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+django = "4.2"
+psycopg2-binary = "^2.9.9"
+pillow = "^10.4.0"
+ipython = "^8.26.0"
+pytils = "^0.4.1"
+python-dotenv = "^1.0.1"
+djangorestframework = "^3.15.2"
+django-filter = "^24.3"
+djangorestframework-simplejwt = "^5.3.1"
+coverage = "^7.6.1"
+drf-yasg = "^1.21.7"
+django-cors-headers = "^4.4.0"
+stripe = "^10.9.0"
+celery = "^5.4.0"
+redis = "^5.0.8"
+django-celery-beat = "^2.7.0"
+
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
