@@ -1,11 +1,14 @@
 from rest_framework import permissions
 
+
 class IsModerator(permissions.BasePermission):
     """ проверка нахождения пользователя в группе модераторов"""
 
     message = 'User has not permissions for this action'
+
     def has_permission(self, request, view):
-         return request.user.groups.filter(name='moderators').exists()
+        return request.user.groups.filter(name='moderators').exists()
+
 
 class IsOwner(permissions.BasePermission):
     """проверка, является ли пользователь владельцем объекта"""
@@ -17,4 +20,3 @@ class IsOwner(permissions.BasePermission):
             return True
         else:
             return False
-
