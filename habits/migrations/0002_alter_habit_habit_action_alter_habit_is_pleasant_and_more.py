@@ -13,16 +13,21 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='habit',
             name='habit_action',
-            field=models.CharField(blank=True, max_length=255, null=True, verbose_name='Действие'),
+            field=models.CharField(blank=True,
+                                   max_length=255,
+                                   null=True,
+                                   verbose_name='Действие'),
         ),
         migrations.AlterField(
             model_name='habit',
             name='is_pleasant',
-            field=models.BooleanField(default=False, verbose_name='Приятная привычка'),
+            field=models.BooleanField(default=False,
+                                      verbose_name='Приятная привычка'),
         ),
         migrations.AlterField(
             model_name='habit',
             name='is_public',
-            field=models.BooleanField(default=True, verbose_name='Публичная привычка'),
+            field=models.BooleanField(default=True,
+                                      verbose_name='Публичная привычка'),
         ),
     ]

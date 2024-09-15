@@ -12,23 +12,31 @@ class HabitTestCase(APITestCase):
     def setUp(self):
         """Добавление двух привычек для тестирования"""
 
-        self.user = User.objects.create(email="test@test.com", tg_chat_id=403235643)
-        self.pleasant_habit = Habit.objects.create(user=self.user,
-                                                   habit_place='приятное тестовое место',
-                                                   habit_action='приятное тестовое действие',
-                                                   is_pleasant=True,
-                                                   is_public=False
-                                                   )
-        self.habit = Habit.objects.create(user=self.user,
-                                          habit_place='тестовое место',
-                                          habit_time=datetime.datetime(2024, 1, 1, 00, 00, 00),
-                                          habit_action='тестовое действие',
-                                          related_habit=self.pleasant_habit,
-                                          period=1,
-                                          execution_time=60,
-                                          is_pleasant=False,
-                                          is_public=False
-                                          )
+        self.user = User.objects.create(email="test@test.com",
+                                        tg_chat_id=403235643)
+        self.pleasant_habit = Habit.objects.create(
+            user=self.user,
+            habit_place='приятное тестовое место',
+            habit_action='приятное тестовое действие',
+            is_pleasant=True,
+            is_public=False
+        )
+        self.habit = Habit.objects.create(
+            user=self.user,
+            habit_place='тестовое место',
+            habit_time=datetime.datetime(2024,
+                                         1,
+                                         1,
+                                         00,
+                                         00,
+                                         00),
+            habit_action='тестовое действие',
+            related_habit=self.pleasant_habit,
+            period=1,
+            execution_time=60,
+            is_pleasant=False,
+            is_public=False
+        )
         self.client.force_authenticate(user=self.user)
 
     def test_habit_create(self):
@@ -46,15 +54,17 @@ class HabitTestCase(APITestCase):
 
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Habit.objects.filter(user=self.user,
-                                              habit_place='New habit place',
-                                              habit_time='11:00:00',
-                                              habit_action='New action',
-                                              prize='Prize',
-                                              period=1,
-                                              execution_time=60,
-                                              is_pleasant=False,
-                                              is_public=False).count(), 1)
+        self.assertEqual(Habit.objects.filter(
+            user=self.user,
+            habit_place='New habit place',
+            habit_time='11:00:00',
+            habit_action='New action',
+            prize='Prize',
+            period=1,
+            execution_time=60,
+            is_pleasant=False,
+            is_public=False
+        ).count(), 1)
 
     def test_habit_retrive(self):
         """Тестирование вывода деталей привычки"""
@@ -80,7 +90,8 @@ class HabitTestCase(APITestCase):
                              "is_pleasant": False,
                              "is_public": False})
 
-        response = self.client.patch(reverse('habits:habit_update', args=(self.habit.pk + 1,)),
+        response = self.client.patch(reverse('habits:habit_update',
+                                             args=(self.habit.pk + 1,)),
                                      data={
                                          "habit_place": "другое место",
                                          "habit_time": "00:00",
@@ -160,11 +171,12 @@ class HabitTestCase(APITestCase):
                              "is_pleasant": False,
                              "is_public": False})
 
-        response = self.client.delete(reverse('habits:habit_delete', args=(self.habit.pk + 1,)), )
+        response = self.client.delete(reverse('habits:habit_delete',
+                                              args=(self.habit.pk + 1,)), )
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
-    ### Тестирование валидаторов
+    # Тестирование валидаторов
     def test_habit_time_validator(self):
         """Корректность валидатора ввода времени привычки"""
 
@@ -178,7 +190,10 @@ class HabitTestCase(APITestCase):
         response = self.client.post(url, data)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.json(), {'non_field_errors': ['Приятной привычке не требуется время (habit_time)']})
+        self.assertEqual(response.json(),
+                         {'non_field_errors': ['Приятной привычке не '
+                                               'требуется время (habit_time)']}
+                         )
 
         url = reverse("habits:habit_create")
         data = {"habit_place": "New habit place",
@@ -190,8 +205,12 @@ class HabitTestCase(APITestCase):
                 "is_public": False}
 
         response = self.client.post(url, data)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.json(), {"non_field_errors": ["Вы не заполнили время привычки (habit_time)"]})
+        self.assertEqual(response.status_code,
+                         status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.json(),
+                         {"non_field_errors": ["Вы не заполнили время "
+                                               "привычки (habit_time)"]}
+                         )
 
     def test_habit_execution_validator(self):
         """Корректность валидатора ввода времени выполнения привычки"""
@@ -205,10 +224,13 @@ class HabitTestCase(APITestCase):
 
         response = self.client.post(url, data)
 
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code,
+                         status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.json(),
-                         {'non_field_errors': [
-                             'Для приятной привычки не нужно указывать время на выполнение (execution_time)']})
+                         {'non_field_errors': ['Для приятной привычки '
+                                               'не нужно указывать время на '
+                                               'выполнение (execution_time)']}
+                         )
 
         url = reverse("habits:habit_create")
         data = {"habit_place": "New habit place",
@@ -221,9 +243,13 @@ class HabitTestCase(APITestCase):
                 "is_public": False}
 
         response = self.client.post(url, data)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code,
+                         status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.json(),
-                         {"non_field_errors": ["Время выполнения привычки не должно быть больше 120 секунд"]})
+                         {"non_field_errors": ["Время выполнения "
+                                               "привычки не должно быть "
+                                               "больше 120 секунд"]}
+                         )
 
         url = reverse("habits:habit_create")
         data = {"habit_place": "New habit place",
@@ -238,7 +264,10 @@ class HabitTestCase(APITestCase):
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.json(),
-                         {"non_field_errors": ["Время выполнения привычки должно быть больше 1 секунды"]})
+                         {"non_field_errors": ["Время выполнения "
+                                               "привычки должно быть "
+                                               "больше 1 секунды"]}
+                         )
 
         url = reverse("habits:habit_create")
         data = {"habit_place": "New habit place",
@@ -250,9 +279,13 @@ class HabitTestCase(APITestCase):
                 "is_public": False}
 
         response = self.client.post(url, data)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.json(), {
-            "non_field_errors": ["Вы не заполнили поле с временем выполнения привычки (execution_time)"]})
+        self.assertEqual(response.status_code,
+                         status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.json(),
+                         {"non_field_errors": ["Вы не заполнили поле с "
+                                               "временем выполнения "
+                                               "привычки (execution_time)"]}
+                         )
 
     def test_habit_period_validator(self):
         """Корректность валидатора ввода времени выполнения привычки"""
@@ -266,8 +299,12 @@ class HabitTestCase(APITestCase):
 
         response = self.client.post(url, data)
 
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.json(), {'non_field_errors': ['Для приятных привычек не нужна периодичность']})
+        self.assertEqual(response.status_code,
+                         status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.json(),
+                         {'non_field_errors': ['Для приятных привычек '
+                                               'не нужна периодичность']}
+                         )
 
         url = reverse("habits:habit_create")
         data = {"habit_place": "New habit place",
@@ -280,9 +317,12 @@ class HabitTestCase(APITestCase):
                 "is_public": False}
 
         response = self.client.post(url, data)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code,
+                         status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.json(),
-                         {"non_field_errors": ["Привычку нужно повторять не реже раза в неделю"]})
+                         {"non_field_errors": ["Привычку нужно повторять "
+                                               "не реже раза в неделю"]}
+                         )
 
         url = reverse("habits:habit_create")
         data = {"habit_place": "New habit place",
@@ -295,12 +335,13 @@ class HabitTestCase(APITestCase):
                 "is_public": False}
 
         response = self.client.post(url, data)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code,
+                         status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.json(),
-                         {"non_field_errors": [
-                             "Периодичность указана некорректно, она должна быть от одного до 7 дней"]})
-
-
+                         {"non_field_errors": ["Периодичность указана"
+                                               " некорректно, она должна быть"
+                                               " от одного до 7 дней"]}
+                         )
 
         url = reverse("habits:habit_create")
         data = {"habit_place": "New habit place",
@@ -312,8 +353,12 @@ class HabitTestCase(APITestCase):
                 "is_public": False}
 
         response = self.client.post(url, data)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.json(), {"non_field_errors": ["Вы не указали периодичность"]})
+        self.assertEqual(response.status_code,
+                         status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.json(),
+                         {"non_field_errors": ["Вы не указали "
+                                               "периодичность"]}
+                         )
 
     def test_related_habit_validator(self):
         """Корректность валидатора связанной привычки"""
@@ -329,11 +374,15 @@ class HabitTestCase(APITestCase):
                 "is_public": False}
 
         response = self.client.post(url, data)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code,
+                         status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.json(),
-                         {"non_field_errors": ["Полезные привычки можно связывать только с приятными"]})
+                         {"non_field_errors": ["Полезные привычки "
+                                               "можно связывать только "
+                                               "с приятными"]}
+                         )
 
-    ### Тестирование отправки рассылок в телеграмм
+    # Тестирование отправки рассылок в телеграмм
 
     def test_send_tg_message(self):
         """Тестирование отправкти рассылки"""
