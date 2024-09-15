@@ -25,7 +25,7 @@ class HabitExecutionValidator:
     def __call__(self, value, *args, **kwargs):
         if value.get('is_pleasant'):
             if value.get('execution_time'):
-                raise ValidationError('Для приятной привычки не нужно указывать время выполнения')
+                raise ValidationError('Для приятной привычки не нужно указывать время на выполнение (execution_time)')
         else:
             if value.get('execution_time'):
                 if value.get('execution_time') > 120:
@@ -74,7 +74,7 @@ class HabitTimeValidator:
     def __call__(self, value, *args, **kwargs):
         if value.get('is_pleasant'):
             if value.get('habit_time'):
-                raise ValidationError("Приятная привычка  приятной привычки не требуется время (time)")
+                raise ValidationError("Приятной привычке не требуется время (habit_time)")
         else:
             if not value.get('habit_time'):
                 raise ValidationError("Вы не заполнили время привычки (habit_time)")

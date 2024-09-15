@@ -13,8 +13,11 @@ from users.permissions import IsOwner
 class HabitListAPIView(generics.ListAPIView):
     serializer_class = HabitSerializer
     pagination_class = HabitsPaginator
-
     permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = Habit.objects.filter(user=self.request.user)
+        return queryset
 
 
 class HabitCreateAPIView(generics.CreateAPIView):
@@ -32,12 +35,11 @@ class HabitCreateAPIView(generics.CreateAPIView):
 
 class HabitUpdateAPIView(generics.UpdateAPIView):
     serializer_class = HabitSerializer
-    permission_classes = [IsAuthenticated, IsOwner]
     queryset = Habit.objects.all()
+    permission_classes = [IsAuthenticated, IsOwner]
 
-    def get_queryset(self):
-        queryset = Habit.objects.filter(user=self.request.user)
-        return queryset
+
+
     def perform_update(self, serializer):
         habit = serializer.save()
         if not habit.is_pleasant:
