@@ -1,20 +1,23 @@
-from django.shortcuts import render
-
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 
 from habits.models import Habit
 from habits.paginators import HabitsPaginator
 from habits.serializers import HabitSerializer
-from habits.services import create_periodic_task, update_periodic_task, delete_periodic_task
+from habits.services import (create_periodic_task,
+                             update_periodic_task,
+                             delete_periodic_task)
 from users.permissions import IsOwner
 
 
 class HabitListAPIView(generics.ListAPIView):
     serializer_class = HabitSerializer
     pagination_class = HabitsPaginator
-
     permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = Habit.objects.filter(user=self.request.user)
+        return queryset
 
 
 class HabitCreateAPIView(generics.CreateAPIView):
@@ -32,17 +35,13 @@ class HabitCreateAPIView(generics.CreateAPIView):
 
 class HabitUpdateAPIView(generics.UpdateAPIView):
     serializer_class = HabitSerializer
-    permission_classes = [IsAuthenticated, IsOwner]
     queryset = Habit.objects.all()
+    permission_classes = [IsAuthenticated, IsOwner]
 
-    def get_queryset(self):
-        queryset = Habit.objects.filter(user=self.request.user)
-        return queryset
     def perform_update(self, serializer):
         habit = serializer.save()
         if not habit.is_pleasant:
             update_periodic_task(habit)
-
 
 
 class HabitRetrieveAPIView(generics.RetrieveAPIView):
