@@ -8,9 +8,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        # fields = ('username', 'email', 'phone', 'town', 'payments')
         fields = ('__all__')
-
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
